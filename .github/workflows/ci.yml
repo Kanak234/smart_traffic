@@ -1,12 +1,45 @@
 name: CI
-on: [push, pull_request]
+
+# This workflow validates the existing simulator without changing its runtime
+# behavior. It intentionally fails when a required validation step fails so
+# the green CI status represents a successful check rather than a suppressed error.
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# The workflow only needs to read source files; no repository write access is required.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
-      - run: pip install pytest && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - run: python -m compileall -q .
-      - run: pytest -q || true
+      # Pin the CI interpreter to the Python version documented as tested by the project.
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Install the project's declared dependencies when the manifest exists.
+      # pytest is installed separately because it is the test runner used by CI.
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+          if [ -f requirements.txt ]; then
+            python -m pip install -r requirements.txt
+          fi
+
+      # compileall validates Python syntax without importing optional GUI/runtime
+      # dependencies, making this check useful even on a headless CI runner.
+      - name: Validate Python syntax
+        run: python -m compileall -q .
+
+      # Run tests when the repository actually contains test files. Unlike the old
+      # workflow, failures are not hidden with 
