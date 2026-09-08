@@ -41,5 +41,5 @@ jobs:
       - name: Validate Python syntax
         run: python -m compileall -q .
 
-      # Run tests when the repository actually contains test files. Unlike the old
-      # workflow, failures are not hidden with 
+      - name: Run deterministic core tests
+        run: python -m pytest -q
