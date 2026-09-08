@@ -1,0 +1,13 @@
+# README documents `pip install -r requirements.txt`, but this file did not
+# exist, so that command failed. These are the three third-party packages the
+# source actually imports.
+#
+# pygame  — main.py and everything under render/
+# numpy   — core simulation maths
+# matplotlib — the plotting in stats/reporting
+#
+# On Python 3.14, if no pygame wheel is available, `pip install pygame-ce`
+# works as a drop-in replacement (same `import pygame`) — as the README notes.
+pygame>=2.5
+numpy>=1.24
+matplotlib>=3.7
