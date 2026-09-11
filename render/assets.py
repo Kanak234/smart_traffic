@@ -35,11 +35,10 @@ def font(size, bold=False):
         except Exception:
             _fonts.pop(key, None)
     if key not in _fonts:
-        try:
-            _fonts[key] = pg.font.SysFont("dejavusans,freesans,arial",
-                                          size, bold=bold)
-        except Exception:
-            _fonts[key] = pg.font.Font(None, size + 2)
+        f = pg.font.Font(None, size + 2)
+        if bold:
+            f.set_bold(True)
+        _fonts[key] = f
     return _fonts[key]
 
 

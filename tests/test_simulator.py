@@ -24,7 +24,6 @@ def test_simulator_init_and_logic_ticks():
 
     assert sim.tick_count == 15
     assert sim.stats.sim_seconds >= 1
-    sim.shutdown()
 
 
 def test_simulator_vehicle_rect_interpolation():
@@ -49,7 +48,6 @@ def test_simulator_vehicle_rect_interpolation():
     v.direction = "North"
     rx, ry, rw, rh = sim._vehicle_rect(v, 0.5)
     assert rw == v.width and rh == v.length
-    sim.shutdown()
 
 
 def test_simulator_render_and_save_shot(tmp_path):
@@ -59,7 +57,6 @@ def test_simulator_render_and_save_shot(tmp_path):
     shot_path = sim.save_shot(str(tmp_path))
     assert os.path.isfile(shot_path)
     assert os.path.getsize(shot_path) > 1000
-    sim.shutdown()
 
 
 def test_simulator_event_handling():
@@ -92,7 +89,6 @@ def test_simulator_event_handling():
     pg.event.post(pg.event.Event(pg.QUIT))
     sim.handle_events()
     assert sim.running is False
-    sim.shutdown()
 
 
 def test_simulator_run_loop_autoquit():

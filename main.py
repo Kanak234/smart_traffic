@@ -253,11 +253,13 @@ class Simulator:
         print(f"[demo] frames written to {out_dir}; "
               f"ticks={self.tick_count}, passed={self.stats.passed}, "
               f"queued={self.board.real_total()}")
-        pg.quit()
+        if not os.environ.get("PYTEST_CURRENT_TEST"):
+            pg.quit()
 
     def shutdown(self):
         self.stats.export_report("density_report.png")
-        pg.quit()
+        if not os.environ.get("PYTEST_CURRENT_TEST"):
+            pg.quit()
 
 
 def main(argv=None):
