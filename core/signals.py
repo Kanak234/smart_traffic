@@ -13,7 +13,7 @@ New, render-only additions:
 """
 
 import config as C
-from config import RED, GREEN, TIME_REM
+from config import GREEN, RED, TIME_REM
 from core import network
 
 

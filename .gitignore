@@ -12,6 +12,15 @@ venv/
 .venv/
 dist/
 build/
+*.egg-info/
+*.egg
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.png
+!screenshots/*.png
+!assets/*.png
 *.gguf
 *.pt
 *.safetensors

@@ -25,13 +25,20 @@ _fonts = {}
 # helpers
 # --------------------------------------------------------------------------
 def font(size, bold=False):
+    if not pg.font.get_init():
+        pg.font.init()
+        _fonts.clear()
     key = (size, bold)
-    if key not in _fonts:
+    if key in _fonts:
         try:
-            _fonts[key] = pg.font.SysFont("dejavusans,freesans,arial",
-                                          size, bold=bold)
+            _fonts[key].render("", True, (0, 0, 0))
         except Exception:
-            _fonts[key] = pg.font.Font(None, size + 2)
+            _fonts.pop(key, None)
+    if key not in _fonts:
+        f = pg.font.Font(None, size + 2)
+        if bold:
+            f.set_bold(True)
+        _fonts[key] = f
     return _fonts[key]
 
 
