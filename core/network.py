@@ -8,7 +8,7 @@ crossings, medians) from these numbers, but the numbers themselves are the
 single source of truth for the simulation and must stay untouched.
 """
 
-from config import (TOT_NODES, TIME_REM, RED, GREEN, HORR, VERT)
+from config import GREEN, HORR, RED, TOT_NODES, VERT
 
 
 class Road:
@@ -50,14 +50,30 @@ def build_signals():
     for _ in range(TOT_NODES - 1):
         signals.append([[6, RED, (0, 0)], [4, GREEN, (0, 0)], [1, GREEN, (0, 0)]])
 
-    signals[1][0][2] = (10, 165);   signals[1][1][2] = (115, 165);  signals[1][2][2] = (115, 315)
-    signals[2][0][2] = (222, 165);  signals[2][1][2] = (335, 315);  signals[2][2][2] = (222, 315)
-    signals[3][0][2] = (418, 165);  signals[3][1][2] = (528, 165);  signals[3][2][2] = (528, 315)
-    signals[4][0][2] = (650, 165);  signals[4][1][2] = (765, 315);  signals[4][2][2] = (650, 315)
-    signals[5][0][2] = (70, 455);   signals[5][1][2] = (175, 565);  signals[5][2][2] = (70, 565)
-    signals[6][0][2] = (222, 455);  signals[6][1][2] = (335, 455);  signals[6][2][2] = (335, 565)
-    signals[7][0][2] = (650, 455);  signals[7][1][2] = (765, 455);  signals[7][2][2] = (650, 565)
-    signals[8][0][2] = (1100, 583); signals[8][1][2] = (1100, 695); signals[8][2][2] = (940, 695)
+    signals[1][0][2] = (10, 165)
+    signals[1][1][2] = (115, 165)
+    signals[1][2][2] = (115, 315)
+    signals[2][0][2] = (222, 165)
+    signals[2][1][2] = (335, 315)
+    signals[2][2][2] = (222, 315)
+    signals[3][0][2] = (418, 165)
+    signals[3][1][2] = (528, 165)
+    signals[3][2][2] = (528, 315)
+    signals[4][0][2] = (650, 165)
+    signals[4][1][2] = (765, 315)
+    signals[4][2][2] = (650, 315)
+    signals[5][0][2] = (70, 455)
+    signals[5][1][2] = (175, 565)
+    signals[5][2][2] = (70, 565)
+    signals[6][0][2] = (222, 455)
+    signals[6][1][2] = (335, 455)
+    signals[6][2][2] = (335, 565)
+    signals[7][0][2] = (650, 455)
+    signals[7][1][2] = (765, 455)
+    signals[7][2][2] = (650, 565)
+    signals[8][0][2] = (1100, 583)
+    signals[8][1][2] = (1100, 695)
+    signals[8][2][2] = (940, 695)
     return signals
 
 

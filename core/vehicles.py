@@ -20,10 +20,9 @@ New, additive layers that do not alter the base motion:
 import random
 
 import config as C
-from config import RED, GREEN, HORR
+from config import HORR, RED
 from core import network
-from core.network import ROADS, ROAD_LANES
-
+from core.network import ROAD_LANES, ROADS
 
 CHOOSE_POSITION_FAILED = (-1, -1)
 

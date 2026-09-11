@@ -25,7 +25,15 @@ _fonts = {}
 # helpers
 # --------------------------------------------------------------------------
 def font(size, bold=False):
+    if not pg.font.get_init():
+        pg.font.init()
+        _fonts.clear()
     key = (size, bold)
+    if key in _fonts:
+        try:
+            _fonts[key].render("", True, (0, 0, 0))
+        except Exception:
+            _fonts.pop(key, None)
     if key not in _fonts:
         try:
             _fonts[key] = pg.font.SysFont("dejavusans,freesans,arial",

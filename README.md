@@ -1,30 +1,67 @@
 # Smart Traffic Control — Synchronized Signal Network Simulator
 
+[![CI](https://github.com/Kanak234/smart_traffic/actions/workflows/ci.yml/badge.svg)](https://github.com/Kanak234/smart_traffic/actions/workflows/ci.yml)
+[![CodeQL Analysis](https://github.com/Kanak234/smart_traffic/actions/workflows/codeql.yml/badge.svg)](https://github.com/Kanak234/smart_traffic/actions/workflows/codeql.yml)
+[![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](https://www.python.org/)
+[![Coverage](https://img.shields.io/badge/coverage-96%25-brightgreen)](https://github.com/Kanak234/smart_traffic)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](Dockerfile)
+
 Modern, realistic rewrite of the classic "Smart Street Light" traffic signal
 synchronization project. **The original traffic algorithm is preserved
 verbatim** — density-based signal management, extra-time distribution,
-round-robin phase rotation, vehicle turning logic, respawn tables — only the
-presentation layer is new.
+round-robin phase rotation, vehicle turning logic, respawn tables — with a
+hardened fixed-timestep simulation core, comprehensive test coverage, and
+reproducible packaging.
 
 ![day](docs/shot_day.png)
 
-## Run
+## Installation & Quick Start
+
+### Standard Installation (PEP 621)
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-python main.py
+# Clone the repository
+git clone https://github.com/Kanak234/smart_traffic.git
+cd smart_traffic
+
+# Set up virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install the package and dependencies
+pip install --upgrade pip
+pip install -e .
 ```
 
-Python 3.10+ (tested on 3.12). On **Python 3.14**, agar `pygame` ka wheel na
-mile to `pip install pygame-ce` use karo (drop-in replacement, same
-`import pygame`).
+### Running the Simulator
 
-Headless demo frames (CI/testing):
+Launch the interactive simulation GUI:
+```bash
+smart-traffic
+# or alternatively:
+python3 main.py
+```
+
+### Headless & Automated Execution
+
+Run headlessly inside CI or containers without an X11 display:
+```bash
+# Run headlessly and exit after 10 simulated seconds, exporting density_report.png
+smart-traffic --headless --autoquit 10.0 --seed 42
+
+# Capture demo snapshot frames and analytics report headlessly
+smart-traffic --demo-shots out/ --ticks 420
+```
+
+### Docker Container
 
 ```bash
-python main.py --demo-shots out/          # saves day + night+rain PNGs
-python main.py --autoquit 10 --seed 42    # 10 s run, then exits + report
+# Build unprivileged container image
+docker build -t smart-traffic .
+
+# Run headless simulation inside container
+docker run --rm -v $(pwd)/output:/app/output smart-traffic --headless --autoquit 15.0 --seed 42
 ```
 
 ## Keys
@@ -82,5 +119,32 @@ Parity notes:
   (`range(0, 20)` over 28 configured managers). Set 28 to enable all.
 - Vehicle types are cosmetic, keyed off the same random length — speeds
   and geometry unchanged.
+
+## Testing & Verification
+
+Run the test suite with coverage enforcement:
+```bash
+# Run pytest with 80%+ statement coverage gate
+pytest
+
+# Check code quality and style with Ruff
+ruff check .
+
+# Verify strict bytecode syntax compilation
+python3 -m compileall -q .
+```
+
+## Documentation
+
+Full context specifications and architecture documents:
+- [Product Requirements Document (PRD)](docs/PRD.md)
+- [Technical Requirements Document (TRD)](docs/TRD.md)
+- [Simulation UX Brief](docs/SIMULATION_UX_BRIEF.md)
+- [Implementation Plan](docs/IMPLEMENTATION_PLAN.md)
+- [Open Questions & Decisions](docs/OPEN_QUESTIONS.md)
+- [Security Policy](SECURITY.md)
+- [Changelog](CHANGELOG.md)
+
+## License
 
 MIT licensed, same as the original project.

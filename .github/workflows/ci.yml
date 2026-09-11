@@ -1,45 +1,57 @@
 name: CI
 
-# This workflow validates the existing simulator without changing its runtime
-# behavior. It intentionally fails when a required validation step fails so
-# the green CI status represents a successful check rather than a suppressed error.
 on:
   push:
-    branches: [master]
+    branches: ["*"]
   pull_request:
-    branches: [master]
+    branches: ["*"]
 
-# The workflow only needs to read source files; no repository write access is required.
-permissions:
-  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
+    name: Test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    env:
+      SDL_VIDEODRIVER: dummy
+
     steps:
-      # Pin the CI interpreter to the Python version documented as tested by the project.
-      - name: Check out source
+      - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
 
-      # Install the project's declared dependencies when the manifest exists.
-      # pytest is installed separately because it is the test runner used by CI.
-      - name: Install test dependencies
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest
-          if [ -f requirements.txt ]; then
-            python -m pip install -r requirements.txt
-          fi
+          python -m pip install --upgrade pip setuptools wheel build
+          pip install ruff pytest pytest-cov
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -e .
 
-      # compileall validates Python syntax without importing optional GUI/runtime
-      # dependencies, making this check useful even on a headless CI runner.
-      - name: Validate Python syntax
+      - name: Bytecode compilation check
         run: python -m compileall -q .
 
-      - name: Run deterministic core tests
-        run: python -m pytest -q
+      - name: Lint with Ruff
+        run: ruff check .
+
+      - name: Run test suite with coverage gate
+        run: pytest
+
+      - name: Verify CLI entry point
+        run: |
+          smart-traffic --version
+          smart-traffic --help
+          smart-traffic --headless --autoquit 0.1 --seed 42
+
+      - name: Build wheel and source distribution
+        run: python -m build

@@ -25,6 +25,8 @@ import time
 
 import pygame as pg
 
+__version__ = "1.0.0"
+
 import config as C
 from core import density, network
 from core.signals import SignalController
@@ -38,7 +40,9 @@ from stats import Stats
 
 
 class Simulator:
-    def __init__(self, seed=None):
+    def __init__(self, seed=None, autoquit=None):
+        self.autoquit = autoquit
+        self.wall_time = 0.0
         pg.init()
         pg.display.set_caption(C.WINDOW_TITLE)
         self.screen = pg.display.set_mode((C.SCREEN_W, C.SCREEN_H))
@@ -204,6 +208,10 @@ class Simulator:
     def run(self):
         while self.running:
             frame_dt = self.clock.tick(C.TARGET_FPS) / 1000.0
+            self.wall_time += frame_dt
+            if self.autoquit is not None and self.wall_time >= self.autoquit:
+                self.running = False
+                break
             self.stats.fps = self.clock.get_fps()
             self.handle_events()
             if not self.paused:
@@ -252,25 +260,29 @@ class Simulator:
         pg.quit()
 
 
-def main():
-    ap = argparse.ArgumentParser(description=C.WINDOW_TITLE)
+def main(argv=None):
+    ap = argparse.ArgumentParser(prog="smart-traffic", description=C.WINDOW_TITLE)
+    ap.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
     ap.add_argument("--seed", type=int, default=None,
                     help="RNG seed for reproducible runs")
+    ap.add_argument("--headless", action="store_true",
+                    help="run headlessly without an active display")
     ap.add_argument("--demo-shots", metavar="DIR",
                     help="headless: simulate, save demo frames to DIR, exit")
     ap.add_argument("--ticks", type=int, default=420,
                     help="warm-up ticks for --demo-shots")
     ap.add_argument("--autoquit", type=float, default=None,
                     help="quit automatically after N seconds (testing/CI)")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
-    if args.demo_shots:
+    if args.headless or args.demo_shots or args.autoquit is not None:
         os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
-    sim = Simulator(seed=args.seed)
+    sim = Simulator(seed=args.seed, autoquit=args.autoquit)
     if args.demo_shots:
         sim.run_demo_shots(args.demo_shots, args.ticks)
     else:
         sim.run()
+    return 0
 
 
 if __name__ == "__main__":

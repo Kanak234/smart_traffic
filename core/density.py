@@ -13,7 +13,7 @@ the accounting is byte-for-byte the same, minus the accident.
 """
 
 import config as C
-from config import RED, GREEN
+from config import GREEN, RED
 
 
 class DensityBoard:

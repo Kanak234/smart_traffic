@@ -21,7 +21,7 @@ import pygame as pg
 import config as C
 from config import HORR
 from core import network
-from core.network import ROADS, ROAD_LANES
+from core.network import ROAD_LANES, ROADS
 
 
 class Environment:

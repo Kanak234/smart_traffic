@@ -15,7 +15,6 @@ import pygame as pg
 
 import config as C
 from config import RED
-from core import network
 
 
 class Pedestrian:
@@ -27,7 +26,6 @@ class Pedestrian:
         orient, rid, road = info["axis"]
         stop = info["stop"]
         self.axis = orient
-        off = rng.choice((-16, 16)) + (0 if stop == road.l_end else 0)
         if orient == "h":
             x = stop + (-16 if stop == road.l_end else 16)
             self.path_a = (x, road.w_start - 8)
